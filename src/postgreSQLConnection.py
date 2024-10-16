@@ -27,3 +27,8 @@ class PostgreSQLConnection:
         self.cursor.close()
         self.connection.close()
     
+    def getMacAddress(self, mac_address):
+        query = sql.SQL("SELECT * FROM estacoes_estacao WHERE topico = {}").format(sql.Literal(mac_address))
+        self.cursor.execute(query)
+        return self.cursor.fetchall()
+    
