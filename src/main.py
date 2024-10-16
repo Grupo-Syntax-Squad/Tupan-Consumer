@@ -1,8 +1,11 @@
-from subs import getData
-from connRedis import setData, getRedisData
+from serviceMqttRedis import ServiceMqttRedis
+import threading
+import datetime
 
-while True:
-    response = getData()
-    print(response)
-    setData(response)
-    print(getRedisData(response))
+serviceMqttRedis = ServiceMqttRedis()
+thread = threading.Thread(target=serviceMqttRedis.start)
+
+input(f"{datetime.datetime.now()} [Main] Pressione ENTER para encerrar a aplicação\n")
+serviceMqttRedis.stop()
+
+print(f"{datetime.datetime.now()} [Main] Encerrando aplicação")
