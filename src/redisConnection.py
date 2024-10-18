@@ -27,6 +27,10 @@ class RedisConnection:
         print(f"{datetime.datetime.now()} [RedisConnection] Salvando dados no Redis: ", dataLog)
         self.r.set(dataLog['mac'], dumps(dataLog))
 
+    def deleteDataLog(self, dataLog):
+        print(f"{datetime.datetime.now()} [RedisConnection] Deletando dados no Redis: ", dataLog)
+        self.r.delete(dataLog['mac'])
+
     def getRedisData(self):
         print(f"{datetime.datetime.now()} [RedisConnection] Buscando dados no Redis")
         keys = self.r.keys('*')

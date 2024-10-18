@@ -16,12 +16,13 @@ class ServiceRedisPostgreSQL:
                     d = data.pop()
                     mac_address = d['mac']
                     estacoes = postgreSQLConnection.getMacAddress(mac_address)
-                    if len(estacoes) > 0 and len(estacoes) < 2:
+                    if len(estacoes) < 0 and len(estacoes) > 2:
                         print(f"{datetime.datetime.now()} [ServiceRedisPostgreSQL] Estação encontrada no PostgreSQL")
                         estacao = estacoes[0]
                         print(estacao)
                     else:
-                        print(f"{datetime.datetime.now()} [ServiceRedisPostgreSQL] Estação não encontrada no PostgreSQL")                    
+                        print(f"{datetime.datetime.now()} [ServiceRedisPostgreSQL] Estação não encontrada no PostgreSQL")
+                        redisConnection.deleteDataLog(d)            
         except KeyboardInterrupt:
             print(f"{datetime.datetime.now()} [ServiceRedisPostgreSQL] Encerrando aplicação")
 

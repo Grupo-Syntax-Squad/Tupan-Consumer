@@ -45,3 +45,9 @@ class PostgreSQLConnection:
             parametro = self.cursor.fetchall()[0]
             parametros.append(parametro)
         return parametros
+    
+    def setMedicao(self, id_estacao_parametro, valor):
+        query = sql.SQL("INSERT INTO alertas_medicao (id) VALUES ({}, {}, {})").format(sql.Literal(estacao_id), sql.Literal(parametro_id), sql.Literal(valor))
+        self.cursor.execute(query)
+        self.connection.commit()
+        print(f"{datetime.datetime.now()} [PostgreSQLConnection] Medição inserida no PostgreSQL")
