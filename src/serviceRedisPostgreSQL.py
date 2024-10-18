@@ -21,10 +21,7 @@ class ServiceRedisPostgreSQL:
                         estacao = estacoes[0]
                         print(estacao)
                     else:
-                        print(f"{datetime.datetime.now()} [ServiceRedisPostgreSQL] Estação não encontrada no PostgreSQL")
-                    
-                    
-                    
+                        print(f"{datetime.datetime.now()} [ServiceRedisPostgreSQL] Estação não encontrada no PostgreSQL")                    
         except KeyboardInterrupt:
             print(f"{datetime.datetime.now()} [ServiceRedisPostgreSQL] Encerrando aplicação")
 
