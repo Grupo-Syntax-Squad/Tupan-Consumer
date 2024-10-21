@@ -22,7 +22,8 @@ Serviço de recepção de dados para a aplicação Tupã.
 python -m venv .venv & ./.venv/Scripts/activate
 ```
 
-> [!WARNING] É possível que a política de execução de scripts do Windows impossibilite a criação do ambiente virtual, caso aconteça segue o artigo sobre políticas de execução: [https://learn.microsoft.com/pt-br/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4](https://learn.microsoft.com/pt-br/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4)
+> [!WARNING]
+> É possível que a política de execução de scripts do Windows impossibilite a criação do ambiente virtual, caso aconteça segue o artigo sobre políticas de execução: [https://learn.microsoft.com/pt-br/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4](https://learn.microsoft.com/pt-br/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.4)
 
 ### Instalando dependências
 ```bash
@@ -51,7 +52,8 @@ python ./src/main.py
     "timestamp": 1729399539.969931
 }
 ```
-> [!NOTE] Vale ressaltar que as chaves dos dados variam de estação para estação, ou seja, nem sempre a temperatura vai ter uma chave chamada "temp", e haverá casos em que nem existirá temperatura.
+> [!NOTE]
+> Vale ressaltar que as chaves dos dados variam de estação para estação, ou seja, nem sempre a temperatura vai ter uma chave chamada "temp", e haverá casos em que nem existirá temperatura.
 
 ## Script de teste de envio de dados ao serviço
 Caso surgir a necessidade de um envio de dados manual de teste esse script fará o envio utilizando todo o setup do serviço.
