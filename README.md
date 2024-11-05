@@ -64,6 +64,8 @@ from os import getenv
 from json import dumps
 from datetime import datetime
 
+load_dotenv()
+
 TOPICO=getenv("TOPICO")
 HOST=getenv("HOST_MQTT")
 PORT=int(getenv("PORT_MQTT"))
