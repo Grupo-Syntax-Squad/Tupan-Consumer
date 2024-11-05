@@ -1,0 +1,58 @@
+name: Deploy to AWS EC2
+on:
+  push:
+    branches:
+      - main
+#  pull_request:
+#    branches:
+#      - main
+env:
+  AWS_PRIVATE_KEY: ${{ secrets.KEYAWS }}
+  AWS_IP: ${{ secrets.AWS_IP }}
+  SSH_OPTIONS: '-o StrictHostKeyChecking=no -i key.pem ubuntu@${{ secrets.AWS_IP }}'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Set permissions for private key
+        run: |
+          echo "${{ env.AWS_PRIVATE_KEY }}" > key.pem
+          chmod 600 key.pem
+
+      - name: Create target directory on AWS instance
+        run: |
+          ssh ${{ env.SSH_OPTIONS }} 'mkdir -p /home/ubuntu/tupan-consumer/'
+
+      - name: Create .env file
+        run: |
+          echo "TOPICO=${{ secrets.TOPICO }}" >> .env
+          echo "HOST_MQTT=${{ secrets.HOST_MQTT }}" >> .env
+          echo "PORT_MQTT=${{ secrets.PORT_MQTT }}" >> .env
+          echo "HOST_REDIS=${{ secrets.HOST_REDIS }}" >> .env
+          echo "PORT_REDIS=${{ secrets.PORT_REDIS }}" >> .env
+          echo "PASSWORD_REDIS=${{ secrets.PASSWORD_REDIS }}" >> .env
+          echo "HOST_POSTGRESQL=${{ secrets.HOST_POSTGRES }}" >> .env 
+          echo "PORT_POSTGRESQL=${{ secrets.PORT_POSTGRES }}" >> .env
+          echo "USER_POSTGRESQL=${{ secrets.USER_POSTGRES }}" >> .env  
+          echo "PASSWORD_POSTGRESQL=${{ secrets.PASSWORD_POSTGRES }}" >> .env   
+          echo "DB_POSTGRESQL=${{ secrets.DB_POSTGRES }}" >> .env        
+      
+      - name: Transfer code to AWS instance
+        run: |
+          rsync -av --exclude='.git' --exclude='.github' --exclude='.husky' -e "ssh -o StrictHostKeyChecking=no -i key.pem" --rsync-path="sudo rsync" ./ ubuntu@${{ env.AWS_IP }}:/home/ubuntu/tupan-consumer
+      
+      - name: Stop running containers
+        run: |
+          ssh ${{ env.SSH_OPTIONS }} 'cd /home/ubuntu/tupan-consumer/ && sudo docker-compose down'
+      
+      - name: Run Docker Compose
+        run: |
+          ssh ${{ env.SSH_OPTIONS }} 'cd /home/ubuntu/tupan-consumer/ && sudo docker-compose up'
+      
+      - name: Cleanup SSH key
+        run: |
+          rm -f key.pem

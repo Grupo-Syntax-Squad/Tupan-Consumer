@@ -8,9 +8,9 @@ load_dotenv()
 
 HOST=getenv("HOST_POSTGRESQL")
 PORT=getenv("PORT_POSTGRESQL")
-USER="postgres"
+USER=getenv("USER_POSTGRESQL")
 PASSWORD=getenv("PASSWORD_POSTGRESQL")
-DB_NAME="tupan"
+DB_NAME=getenv("DB_POSTGRESQL")
 
 class PostgreSQLConnection:
     def __init__(self):
