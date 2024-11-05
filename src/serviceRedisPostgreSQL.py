@@ -29,7 +29,7 @@ class ServiceRedisPostgreSQL:
                             try:
                                 index = estacao_parametros.index(estacao_parametro)
                                 json_name = parametros[index][7]
-                                dados = d[json_name]
+                                dados = d["data"][json_name]
                                 timestamp = d["timestamp"]
                                 timestamp_converido = datetime.datetime.fromtimestamp(timestamp)
                                 postgreSQLConnection.setMedicao(timestamp, timestamp_converido, dados, estacao_parametro[0])
