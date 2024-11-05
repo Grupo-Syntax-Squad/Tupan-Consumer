@@ -19,5 +19,5 @@ services:
       - redis_data:/data
     command: ["redis-server", "--requirepass", "${PASSWORD_REDIS}"]
     restart: always
-  volumes:
-    redis_data:
+volumes:
+  redis_data:
