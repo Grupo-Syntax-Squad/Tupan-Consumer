@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  web:
+    image: tupan-consumer
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - "8001:8001"
+    environment:
+      - DEBUG=True
+    restart: always
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: ["redis-server", "--requirepass", "${PASSWORD_REDIS}"]
+    restart: always
+volumes:
+  redis_data:
