@@ -49,9 +49,13 @@ jobs:
         run: |
           ssh ${{ env.SSH_OPTIONS }} 'cd /home/ubuntu/tupan-consumer/ && sudo docker-compose down'
       
+      - name: Build Docker Compose
+        run: |
+          ssh ${{ env.SSH_OPTIONS }} 'cd /home/ubuntu/tupan-consumer/ && sudo docker-compose build'
+      
       - name: Run Docker Compose
         run: |
-          ssh ${{ env.SSH_OPTIONS }} 'cd /home/ubuntu/tupan-consumer/ && sudo docker-compose up'
+          ssh ${{ env.SSH_OPTIONS }} 'cd /home/ubuntu/tupan-consumer/ && sudo docker-compose up -d'
       
       - name: Cleanup SSH key
         run: |
