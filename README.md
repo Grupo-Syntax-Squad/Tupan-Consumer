@@ -9,6 +9,11 @@ Serviço de recepção de dados para a aplicação Tupã.
 - [Rodando o serviço](#rodando-o-serviço)
 - [Formato do json recebido pelo MQTT](#formato-do-json-recebido-pelo-mqtt)
 - [Script de teste de envio de dados ao serviço](#script-de-teste-de-envio-de-dados-ao-serviço)
+- [Data Logger](#data-logger)
+- [Setup do Data Logger](#setup-do-data-logger)
+    - [Instalando dependências](#instalando-dependências-1)
+    - [Selecionar o Board e a Porta](#selecionar-o-board-e-a-porta)
+    - [Upload do código no processador](#upload-do-código-no-processador)
 
 ## Pré requisitos
 - Python
@@ -72,7 +77,7 @@ PORT=int(getenv("PORT_MQTT"))
 
 mensagem = {
     "mac": "123",
-    "dados": {
+    "data": {
         "temp": 40,
         "umid": 3
     },
@@ -88,3 +93,36 @@ publish.single(
 
 print(f"Mensagem publicada no tópico {TOPICO}: {mensagem}")
 ```
+
+## Data Logger
+O Data Logger faz parte da estação, ele é o microprocessador que recebe as informações dos sensores e transmite via protocolo MQTT para o serviço Tupã Consumer que irá tratar e armazenar esses dados.
+Para o data logger foi utilizado o microprocessador ESP32.
+
+## Setup do Data Logger
+
+### Instalando dependências
+É necessário instalar algumas dependências para a execução do código do microprocessador presente em [./esp](./esp/main.ino)
+
+- ESP32 no Boards Manager
+É necessário instalar os Boards do ESP32 feito por Espressif.
+
+![ESP32 no Boards Manager](./readme_images/esp32.png)
+
+- ArduinoJson
+É necessário instalar o ArduinoJson por Benoit Blanchon.
+
+![ArduinoJson no Library Manager](./readme_images/esp32.png)
+
+- ArduinoMqttClient
+É necessário instalar o ArduinoMqttClient por Arduino.
+
+![ArduinoMqttClient no Library Manager](./readme_images/arduinomqttclient.png)
+
+### Selecionar o Board e a Porta
+É necessário selecionar o Board: ESP32 Dev Module e a Porta que aparecer após a conexão do microprocessador na máquina, na aba ferramentas (tools).
+
+![Selecionando o Board e a Porta em ferramentas](./readme_images/configboardport.png)
+
+### Upload do código no processador
+Após realizar os processos acima, basta fazer upload do [código](./esp/main.ino) do microprocessador para o mesmo.
+![Fazendo upload do código para o microprocessador](./readme_images/codeupload.png)
