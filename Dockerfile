@@ -13,7 +13,7 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 COPY . /app/
 
 # Expôr a porta que a aplicação vai usar
-EXPOSE 8000
+EXPOSE 8001
 
 # Comando para rodar o servidor
 CMD ["python", "src/main.py"]
