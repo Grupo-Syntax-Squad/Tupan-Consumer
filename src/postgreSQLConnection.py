@@ -46,14 +46,37 @@ class PostgreSQLConnection:
             parametros.append(parametro)
         return estacao_parametros, parametros
     
+    def getAlertas(self, estacao_id):
+        estacao_parametros, parametros = self.getEstacaoParametros(estacao_id)
+        alertas = []
+        for estacao_parametro in estacao_parametros:
+            query = sql.SQL("SELECT * FROM alertas_alerta WHERE estacao_parametro_id = {}").format(sql.Literal(estacao_parametro['id']))
+            self.cursor.execute(query)
+            alertas.extend(self.cursor.fetchall())
+        return alertas
+    
+    def setHistoricoAlertas(self, alerta_id, medicao):
+        now = datetime.datetime.now()
+        try:
+            query = sql.SQL("INSERT INTO alertas_historicoalerta (timestamp, alerta_id, medicao_id, criado, modificado) VALUES ({}, {}, {}, {}, {}) RETURNING *").format(sql.Literal(medicao['timestamp']), sql.Literal(alerta_id), sql.Literal(medicao['id']), sql.Literal(now), sql.Literal(now))
+            self.cursor.execute(query)
+            self.connection.commit()
+            created_record = self.cursor.fetchone()
+            print(f"{datetime.datetime.now()} [PostgreSQLConnection] Histórico de alerta inserido no PostgreSQL")
+            return created_record
+        except Exception as e:
+            print(f"{datetime.datetime.now()} [PostgreSQLConnection] Falha ao inserir o histórico de alerta no PostgreSQL: {e}")
+            return False
+    
     def setMedicao(self, timestamp, timestamp_convertido, dados, estacao_parametro_id):
         now = datetime.datetime.now()
         try:
-            query = sql.SQL("INSERT INTO alertas_medicao (timestamp, timestamp_convertido, dados, estacao_parametro_id, criado, modificado) VALUES ({}, {}, {}, {}, {}, {})").format(sql.Literal(timestamp), sql.Literal(timestamp_convertido), sql.Literal(dados), sql.Literal(estacao_parametro_id), sql.Literal(now), sql.Literal(now))
+            query = sql.SQL("INSERT INTO alertas_medicao (timestamp, timestamp_convertido, dados, estacao_parametro_id, criado, modificado) VALUES ({}, {}, {}, {}, {}, {}) RETURNING *").format(sql.Literal(timestamp), sql.Literal(timestamp_convertido), sql.Literal(dados), sql.Literal(estacao_parametro_id), sql.Literal(now), sql.Literal(now))
             self.cursor.execute(query)
             self.connection.commit()
+            created_record = self.cursor.fetchone()
             print(f"{datetime.datetime.now()} [PostgreSQLConnection] Medição inserida no PostgreSQL")
-            return True
+            return created_record
         except Exception as e:
             print(f"{datetime.datetime.now()} [PostgreSQLConnection] Falha ao inserir a medição no PostgreSQL: {e}")
             return False
