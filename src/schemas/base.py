@@ -1,7 +1,8 @@
 from datetime import datetime
 
 class Base:
-    id: int
-    created_at: datetime
-    modified_at: datetime
-    active: bool
+    def __init__(self):
+        self.id: int
+        self.created_at: datetime
+        self.modified_at: datetime
+        self.active: bool

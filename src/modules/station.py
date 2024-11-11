@@ -12,14 +12,15 @@ class ModuleStation(Base):
         self.postgreSQLConnection.cursor.execute(query)
         stations_schemas: list[SchemaStation] = []
         for station in self.postgreSQLConnection.cursor.fetchall():
+            print(station)
             stations_schemas.append(SchemaStation(
-                id=station['id'],
-                created_at=station['criado'],
-                modified_at=station['modificado'],
-                active=station['ativo'],
-                name=station['nome'],
-                topic=station['topico'],
-                address_id=station['endereco_id']
+                id=station[0],
+                created_at=station[1],
+                modified_at=station[2],
+                active=station[3],
+                name=station[4],
+                topic=station[5],
+                address_id=station[6]
             ))
         return stations_schemas
 
