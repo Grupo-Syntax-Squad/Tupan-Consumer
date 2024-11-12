@@ -1,6 +1,7 @@
 from modules.payload import ModulePayload
 from modules.station import ModuleStation
 from modules.alert import ModuleAlert
+from schemas.station import SchemaStation
 import datetime
 from time import sleep
 
@@ -20,6 +21,7 @@ class ServiceRedisPostgreSQL:
                     payload = data.pop()
                     mac_address = payload.mac
                     stations = self.module_station.get_station_by_mac_address(mac_address)
+                    print(stations[0].__dict__, len(stations))
                     if self.has_station(stations):
                         meter = self.send_meters(payload, stations)
                     else:
@@ -35,10 +37,11 @@ class ServiceRedisPostgreSQL:
     def has_station(self, stations: list) -> bool:
         return len(stations) == 1
 
-    def send_meters(self, payload: dict, stations: list) -> None:
+    def send_meters(self, payload: dict, stations: list[SchemaStation]) -> None:
         print(f"{datetime.datetime.now()} [ServiceRedisPostgreSQL] Estação encontrada no PostgreSQL")
-        estacao = stations[0]
-        station_parameters, parameters = self.module_station.get_station_parameters(estacao[0])
+        station = stations[0]
+        print(station.__dict__)
+        station_parameters, parameters = self.module_station.get_station_parameters(station.id)
         for station_parameter in station_parameters:
             try:
                 index = station_parameters.index(station_parameter)

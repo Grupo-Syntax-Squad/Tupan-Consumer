@@ -12,7 +12,6 @@ class ModuleStation(Base):
         self.postgreSQLConnection.cursor.execute(query)
         stations_schemas: list[SchemaStation] = []
         for station in self.postgreSQLConnection.cursor.fetchall():
-            print(station)
             stations_schemas.append(SchemaStation(
                 id=station[0],
                 created_at=station[1],
@@ -22,6 +21,7 @@ class ModuleStation(Base):
                 topic=station[5],
                 address_id=station[6]
             ))
+            print("[get station by mac address]:", stations_schemas[0].name)
         return stations_schemas
 
     def set_meter(self, timestamp: float, converted_timestamp: any, data: any, station_parameter_id: int) -> bool:
