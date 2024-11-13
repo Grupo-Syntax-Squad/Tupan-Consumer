@@ -1,10 +1,9 @@
-import datetime
+from datetime import datetime
+from .base import Base
 
-class SchemaParameter:
-    def __init__(self, id: int, created_at: datetime, updated_at: datetime, name: str, fator: float, offset: float, json_name: str, description: str, category_id: int):
-        self.id = id
-        self.created_at = created_at
-        self.updated_at = updated_at
+class SchemaParameter(Base):
+    def __init__(self, id: int, created_at: datetime, modified_at: datetime, active: bool, name: str, fator: float, offset: float, json_name: str, description: str, category_id: int) -> None:
+        super().__init__(id, created_at, modified_at, active)
         self.name: str = name
         self.fator: float = fator
         self.offset: float = offset

@@ -5,6 +5,9 @@ from schemas.station import SchemaStation
 import datetime
 from time import sleep
 
+from schemas.payload import SchemaPayload
+from schemas.station import SchemaStation
+
 class ServiceRedisPostgreSQL:
     def __init__(self):
         self.run = True
@@ -18,7 +21,7 @@ class ServiceRedisPostgreSQL:
                 sleep(5)
                 data = self.module_payload.get_payloads_from_redis()
                 while len(data) > 0:
-                    payload = data.pop()
+                    payload: SchemaPayload = data.pop()
                     mac_address = payload.mac
                     stations = self.module_station.get_station_by_mac_address(mac_address)
                     print(stations[0].__dict__, len(stations))
@@ -37,22 +40,22 @@ class ServiceRedisPostgreSQL:
     def has_station(self, stations: list) -> bool:
         return len(stations) == 1
 
-    def send_meters(self, payload: dict, stations: list[SchemaStation]) -> None:
+    def send_meters(self, payload: SchemaPayload, stations: list[SchemaStation]) -> None:
         print(f"{datetime.datetime.now()} [ServiceRedisPostgreSQL] Estação encontrada no PostgreSQL")
-        station = stations[0]
-        print(station.__dict__)
-        station_parameters, parameters = self.module_station.get_station_parameters(station.id)
+        estacao = stations[0]
+        station_parameters, parameters = self.module_station.get_station_parameters(estacao.id)
         for station_parameter in station_parameters:
             try:
                 index = station_parameters.index(station_parameter)
                 json_name = parameters[index].json_name
-                data = payload["data"][json_name]
-                timestamp = payload["timestamp"]
+                data = payload.data[json_name]
+                timestamp = payload.timestamp
                 converted_timestamp = datetime.datetime.fromtimestamp(timestamp)
-                self.module_station.set_meter(timestamp, converted_timestamp, data, station_parameter.id)
+                meter = self.module_station.set_meter(timestamp, converted_timestamp, data, station_parameter.id)
                 self.module_alert.verify_alerts(station_parameter.id, payload)
             except Exception as e:
                 print(f"{datetime.datetime.now()} [ServiceRedisPostgreSQL] Erro ao cadastrar a medição do parâmetro: {e}")
+                raise Exception(e)
         self.module_payload.delete_payload(payload)
         return
 

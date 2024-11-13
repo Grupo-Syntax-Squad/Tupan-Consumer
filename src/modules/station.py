@@ -3,7 +3,7 @@ from schemas.station_parameter import SchemaStationParameter
 from schemas.station import SchemaStation
 from schemas.meter import SchemaMeter
 from .base import Base
-from datetime import datetime
+import datetime
 from psycopg2 import sql
 
 class ModuleStation(Base):
@@ -12,7 +12,7 @@ class ModuleStation(Base):
         self.postgreSQLConnection.cursor.execute(query)
         stations_schemas: list[SchemaStation] = []
         for station in self.postgreSQLConnection.cursor.fetchall():
-            stations_schemas.append(SchemaStation(
+            schema = SchemaStation(
                 id=station[0],
                 created_at=station[1],
                 modified_at=station[2],
@@ -20,15 +20,16 @@ class ModuleStation(Base):
                 name=station[4],
                 topic=station[5],
                 address_id=station[6]
-            ))
-            print("[get station by mac address]:", stations_schemas[0].name)
+            )
+            stations_schemas.append(schema)
         return stations_schemas
 
-    def set_meter(self, timestamp: float, converted_timestamp: any, data: any, station_parameter_id: int) -> bool:
+    def set_meter(self, timestamp: float, converted_timestamp: datetime, data: any, station_parameter_id: int) -> bool:
         now: any = datetime.datetime.now()
         try:
-            query: sql.SQL = sql.SQL("INSERT INTO estacoes_medicao(criado, modificado, timestamp, timestamp_convertido, estacao_parametro_id, dado) VALUES ({}, {}, {}, {}, {}, {}) RETURNING id").format(sql.Literal(now), sql.Literal(now), sql.Literal(timestamp), sql.Literal(converted_timestamp), sql.Literal(station_parameter_id), sql.Literal(data))
+            query: sql.SQL = sql.SQL("INSERT INTO alertas_medicao(criado, modificado, timestamp, timestamp_convertido, estacao_parametro_id, dados) VALUES ({}, {}, {}, {}, {}, {}) RETURNING id").format(sql.Literal(now), sql.Literal(now), sql.Literal(timestamp), sql.Literal(converted_timestamp), sql.Literal(station_parameter_id), sql.Literal(data))
             self.postgreSQLConnection.cursor.execute(query)
+            self.postgreSQLConnection.conn.commit()
             meter_id = self.postgreSQLConnection.cursor.fetchone()[0]
             return SchemaMeter(
                 id=meter_id,
@@ -42,6 +43,7 @@ class ModuleStation(Base):
             
         except Exception as e:
             print(f"{datetime.datetime.now()} [PostgreSQLConnection] Falha ao inserir a medição no PostgreSQL: {e}")
+            raise Exception(e)
             return False
 
     def get_station_parameters(self, station_id: int) -> tuple[list[SchemaStationParameter], list[SchemaParameter]]:
