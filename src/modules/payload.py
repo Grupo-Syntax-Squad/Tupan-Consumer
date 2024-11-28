@@ -1,5 +1,5 @@
-from modules.base import Base
-from schemas.payload import SchemaPayload
+from src.modules.base import Base
+from src.schemas.payload import SchemaPayload
 import datetime
 from json import dumps, loads
 

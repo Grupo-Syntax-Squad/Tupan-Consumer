@@ -1,8 +1,8 @@
-from modules.base import Base
-from schemas.alert import SchemaAlert
-from schemas.payload import SchemaPayload
-from schemas.station_parameter import SchemaStationParameter
-from schemas.parameter import SchemaParameter
+from src.modules.base import Base
+from src.schemas.alert import SchemaAlert
+from src.schemas.payload import SchemaPayload
+from src.schemas.station_parameter import SchemaStationParameter
+from src.schemas.parameter import SchemaParameter
 import datetime
 from psycopg2 import sql
 
@@ -18,7 +18,8 @@ class ModuleAlert(Base):
                 modified_at=alert['modificado'],
                 name=alert['nome'],
                 condition=alert['condicao'],
-                station_parameter_id=alert['estacao_parametro_id']
+                station_parameter_id=alert['estacao_parametro_id'],
+                active=True
             ))
         return alerts
 
@@ -41,14 +42,19 @@ class ModuleAlert(Base):
             created_at=parameter['criado'],
             modified_at=parameter['modificado'],
             name=parameter['nome'],
-            json_name=parameter['nome_json']
+            json_name=parameter['nome_json'],
+            active=True,
+            fator=parameter['fator'],
+            offset=parameter['offset'],
+            description=parameter['descricao'],
+            category_id=parameter['categoria_id']
         )
 
     def save_alert(self, payload: SchemaPayload, alert: SchemaAlert, meter_id: int) -> None:
         try:
             query: sql.SQL = sql.SQL("INSERT INTO alertas_historicoalerta(criado, modificado, timestamp, timestamp_convertido, alerta_id, medicao_id) VALUES ({}, {}, {}, {}, {}, {})").format(sql.Literal(datetime.datetime.now()), sql.Literal(datetime.datetime.now()), sql.Literal(payload.timestamp), sql.Literal(datetime.datetime.fromtimestamp(payload.timestamp)), sql.Literal(alert.id), sql.Literal(meter_id))
             self.postgreSQLConnection.cursor.execute(query)
-            self.postgreSQLConnection.connection.commit()
+            self.postgreSQLConnection.conn.commit()
         except Exception as e:
             print(f"{datetime.datetime.now()} [ModuleAlert] Falha ao inserir o alerta no PostgreSQL: {e}")
 
@@ -62,6 +68,6 @@ class ModuleAlert(Base):
             json_name = parameter.json_name
             data = payload.data[json_name]
             if eval(f"{data} {alert.condition}"):
-                meter_id = self.get_last_meter_id(station_parameter_id)
+                meter_id = self.get_last_meter_id(station_parameter_id)  # Implement this method
                 self.save_alert(payload, alert, meter_id)
         

@@ -1,5 +1,5 @@
-from services.serviceMqttRedis import ServiceMqttRedis
-from services.serviceRedisPostgreSQL import ServiceRedisPostgreSQL
+from src.services.serviceMqttRedis import ServiceMqttRedis
+from src.services.serviceRedisPostgreSQL import ServiceRedisPostgreSQL
 
 import threading
 import datetime

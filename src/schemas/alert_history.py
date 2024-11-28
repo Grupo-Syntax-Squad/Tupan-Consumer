@@ -1,7 +1,8 @@
-from schemas.base import Base
+from typing import Any
+from .base import Base
 
 class SchemaAlertHistory(Base):
     timestamp: float
-    converted_timestamp: any
+    converted_timestamp: Any
     alert_id: int
     meter_id: int

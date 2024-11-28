@@ -1,4 +1,4 @@
-from modules.payload import ModulePayload
+from src.modules.payload import ModulePayload
 import datetime
 
 class ServiceMqttRedis:

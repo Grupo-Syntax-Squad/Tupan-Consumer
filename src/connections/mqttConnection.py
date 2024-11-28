@@ -8,7 +8,7 @@ load_dotenv()
 
 TOPICO=getenv("TOPICO")
 HOST=getenv("HOST_MQTT")
-PORT=int(getenv("PORT_MQTT"))  
+PORT=int(getenv("PORT_MQTT"))  # type: ignore[arg-type]
 
 def wait_mqtt_message() -> tuple[str, dict]:
     print(f"{datetime.datetime.now()} [MQTTConnection] Aguardando mensagem MQTT")

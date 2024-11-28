@@ -1,7 +1,8 @@
-from schemas.parameter import SchemaParameter
-from schemas.station_parameter import SchemaStationParameter
-from schemas.station import SchemaStation
-from schemas.meter import SchemaMeter
+from typing import Any
+from src.schemas.parameter import SchemaParameter
+from src.schemas.station_parameter import SchemaStationParameter
+from src.schemas.station import SchemaStation
+from src.schemas.meter import SchemaMeter
 from .base import Base
 from datetime import datetime
 from psycopg2 import sql
@@ -23,8 +24,8 @@ class ModuleStation(Base):
             ))
         return stations_schemas
 
-    def set_meter(self, timestamp: float, converted_timestamp: any, data: any, station_parameter_id: int) -> bool:
-        now: any = datetime.datetime.now()
+    def set_meter(self, timestamp: float, converted_timestamp: Any, data: float, station_parameter_id: int) -> SchemaMeter | bool:
+        now: datetime = datetime.now()
         try:
             query: sql.SQL = sql.SQL("INSERT INTO estacoes_medicao(criado, modificado, timestamp, timestamp_convertido, estacao_parametro_id, dado) VALUES ({}, {}, {}, {}, {}, {}) RETURNING id").format(sql.Literal(now), sql.Literal(now), sql.Literal(timestamp), sql.Literal(converted_timestamp), sql.Literal(station_parameter_id), sql.Literal(data))
             self.postgreSQLConnection.cursor.execute(query)
@@ -36,11 +37,12 @@ class ModuleStation(Base):
                 timestamp=timestamp,
                 converted_timestamp=converted_timestamp,
                 station_parameter_id=station_parameter_id,
-                data=data
+                data=data,
+                active=True
             )
             
         except Exception as e:
-            print(f"{datetime.datetime.now()} [PostgreSQLConnection] Falha ao inserir a medição no PostgreSQL: {e}")
+            print(f"{datetime.now()} [PostgreSQLConnection] Falha ao inserir a medição no PostgreSQL: {e}")
             return False
 
     def get_station_parameters(self, station_id: int) -> tuple[list[SchemaStationParameter], list[SchemaParameter]]:

@@ -1,6 +1,6 @@
-from modules.payload import ModulePayload
-from modules.station import ModuleStation
-from modules.alert import ModuleAlert
+from src.modules.payload import ModulePayload
+from src.modules.station import ModuleStation
+from src.modules.alert import ModuleAlert
 import datetime
 from time import sleep
 

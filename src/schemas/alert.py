@@ -1,4 +1,4 @@
-from schemas.base import Base
+from .base import Base
 
 class SchemaAlert(Base):
     name: str

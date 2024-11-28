@@ -1,5 +1,7 @@
-class SchemaPayload:
-    def __init__(self, mac: str, data: dict, timestamp: float):
-        self.mac = mac
-        self.data = data
-        self.timestamp = timestamp
+from typing import Any
+from pydantic import BaseModel
+
+class SchemaPayload(BaseModel):
+    mac: str
+    data: dict[str, Any]
+    timestamp: float

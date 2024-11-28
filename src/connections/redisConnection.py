@@ -6,7 +6,7 @@ import datetime
 load_dotenv()
 
 HOST=getenv("HOST_REDIS")
-PORT=int(getenv("PORT_REDIS"))
+PORT=int(getenv("PORT_REDIS"))  # type: ignore[arg-type]
 PASSWORD=getenv("PASSWORD_REDIS")
 
 class RedisConnection:
