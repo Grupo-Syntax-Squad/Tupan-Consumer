@@ -1,7 +1,6 @@
 import redis
 from dotenv import load_dotenv
 from os import getenv
-from json import dumps, loads
 import datetime
 
 load_dotenv()

@@ -4,7 +4,6 @@ from schemas.payload import SchemaPayload
 from schemas.station_parameter import SchemaStationParameter
 from schemas.parameter import SchemaParameter
 import datetime
-import psycopg2
 from psycopg2 import sql
 
 class ModuleAlert(Base):

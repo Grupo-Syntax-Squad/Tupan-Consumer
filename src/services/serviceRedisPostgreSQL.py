@@ -21,7 +21,7 @@ class ServiceRedisPostgreSQL:
                     mac_address = payload.mac
                     stations = self.module_station.get_station_by_mac_address(mac_address)
                     if self.has_station(stations):
-                        meter = self.send_meters(payload, stations)
+                        self.send_meters(payload, stations)
                     else:
                         print(f"{datetime.datetime.now()} [ServiceRedisPostgreSQL] Estação não encontrada no PostgreSQL")
                         self.module_payload.delete_payload(payload)   
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     serviceRedisPostgreSQL = ServiceRedisPostgreSQL()
     try:
         serviceRedisPostgreSQL.start()
-    except:
+    except:  # noqa: E722
         print("Erro")
     finally:
         serviceRedisPostgreSQL.stop()

@@ -11,7 +11,7 @@ def module_payload() -> ModulePayload:
     return ModulePayload()
 
 def test_get_payloads_from_redis(module_payload):
-    module_payload.get_payloads_from_redis()
+    payloads = module_payload.get_payloads_from_redis()
 
     assert isinstance(payloads) == list[SchemaPayload]
 
@@ -24,7 +24,7 @@ def test_save_payload(module_payload):
         },
         "timestamp": 1729399539.969931
     }
-    module_payload.save_payload(payload)
+    module_payload.save_payload(sended_payload)
     payloads = module_payload.get_payloads_from_redis()
     for payload in payloads:
         if payload.mac == sended_payload.mac:
@@ -55,7 +55,7 @@ def test_delete_payload(module_payload):
     }
     
     module_payload.save_payload(sended_payload)
-    module_payload.delete_payload(payload)
+    module_payload.delete_payload(sended_payload)
 
     payloads = module_payload.get_payloads_from_redis()
 
